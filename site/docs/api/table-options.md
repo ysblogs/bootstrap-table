@@ -827,6 +827,7 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 - **Example:** [Pagination Index Number](https://examples.bootstrap-table.com/#options/pagination-index-number.html)
 
 ## paginationParts
+
 - **Attribute:** `data-pagination-parts`
 
 - **Type:** `array`
