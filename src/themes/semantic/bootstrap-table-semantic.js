@@ -43,7 +43,12 @@ $.BootstrapTable = class extends $.BootstrapTable {
 
   initPagination () {
     super.initPagination()
-    if (this.options.pagination && !this.options.onlyInfoPagination) {
+    let paginationParts = this.options.paginationParts
+    if (typeof paginationParts === 'string') {
+      paginationParts = paginationParts.replace(/\[|\]| /g, '').toLowerCase().split(',')
+    }
+
+    if (this.options.pagination && paginationParts.includes('pagesize')) {
       this.$pagination.find('.dropdown').dropdown()
     }
   }

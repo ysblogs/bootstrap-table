@@ -957,6 +957,11 @@ class BootstrapTable {
       return value
     })
 
+    let paginationParts = opts.paginationParts
+    if (typeof paginationParts === 'string') {
+      paginationParts = paginationParts.replace(/\[|\]| /g, '').toLowerCase().split(',')
+    }
+
     if (opts.sidePagination !== 'server') {
       opts.totalRows = data.length
     }
@@ -990,16 +995,18 @@ class BootstrapTable {
       this.options.totalNotFiltered = undefined
     }
 
-    const paginationInfo = opts.onlyInfoPagination ?
-      opts.formatDetailPagination(opts.totalRows) :
-      opts.formatShowingRows(this.pageFrom, this.pageTo, opts.totalRows, opts.totalNotFiltered)
+    if (paginationParts.includes('pageinfo') || paginationParts.includes('pageinfoshort') || paginationParts.includes('pagesize')) {
+      html.push(`<div class="${this.constants.classes.pull}-${opts.paginationDetailHAlign} pagination-detail">`)
+    }
 
-    html.push(`<div class="${this.constants.classes.pull}-${opts.paginationDetailHAlign} pagination-detail">
-      <span class="pagination-info">
+    if (paginationParts.includes('pageinfo') || paginationParts.includes('pageinfoshort')) {
+      const paginationInfo = paginationParts.includes('pageinfoshort') ? opts.formatDetailPagination(opts.totalRows) : opts.formatShowingRows(this.pageFrom, this.pageTo, opts.totalRows, opts.totalNotFiltered)
+      html.push(`<span class="pagination-info">
       ${paginationInfo}
       </span>`)
+    }
 
-    if (!opts.onlyInfoPagination) {
+    if (paginationParts.includes('pagesize')) {
       html.push('<span class="page-list">')
 
       const pageNumber = [
@@ -1026,8 +1033,13 @@ class BootstrapTable {
       pageNumber.push(`${this.constants.html.pageDropdown[1]}</span>`)
 
       html.push(opts.formatRecordsPerPage(pageNumber.join('')))
-      html.push('</span></div>')
+    }
 
+    if (paginationParts.includes('pageinfo') || paginationParts.includes('pageinfoshort') || paginationParts.includes('pagesize')) {
+      html.push('</span></div>')
+    }
+
+    if (paginationParts.includes('pagelist')) {
       html.push(`<div class="${this.constants.classes.pull}-${opts.paginationHAlign} pagination">`,
         Utils.sprintf(this.constants.html.pagination[0], Utils.sprintf(' pagination-%s', opts.iconSize)),
         Utils.sprintf(this.constants.html.paginationItem, ' page-pre', opts.formatSRPaginationPreText(), opts.paginationPreText))

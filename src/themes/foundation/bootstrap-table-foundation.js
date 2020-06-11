@@ -57,7 +57,12 @@ $.BootstrapTable = class extends $.BootstrapTable {
   initPagination () {
     super.initPagination()
 
-    if (this.options.pagination && !this.options.onlyInfoPagination) {
+    let paginationParts = this.options.paginationParts
+    if (typeof paginationParts === 'string') {
+      paginationParts = paginationParts.replace(/\[|\]| /g, '').toLowerCase().split(',')
+    }
+
+    if (this.options.pagination && paginationParts.includes('pagesize')) {
       const $el = this.$pagination.find('.dropdown-toggle')
       $el.attr('data-toggle', $el.next().attr('id'))
 
